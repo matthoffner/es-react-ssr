@@ -1,0 +1,18 @@
+{
+  "name": "es-react-ssr",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Example React SSR example with ES modules, no transpilation required",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --experimental-modules index.js"
+  },
+  "license": "GPL-3.0",
+  "dependencies": {
+    "es-react": "^16.12.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "snowpack": "^1.0.3"
+  }
+}
