@@ -1,15 +1,26 @@
 {
-  "name": "es-react-ssr",
+  "name": "react-ssr",
   "type": "module",
   "version": "0.1.0",
   "description": "Example React SSR example with ES modules, no transpilation required",
   "main": "index.js",
   "scripts": {
+    "prepare": "snowpack",
     "start": "node --experimental-modules index.js"
   },
   "license": "GPL-3.0",
+  "devDependencies": {
+    "snowpack": "^1.5.0"
+  },
   "dependencies": {
-    "es-react": "^16.12.0",
-    "express": "^4.17.1"
+    "es-module-shims": "0.4.6",
+    "express": "^4.17.1",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0"
+  },
+  "snowpack": {
+    "webDependencies": [
+      "es-module-shims"
+    ]
   }
 }

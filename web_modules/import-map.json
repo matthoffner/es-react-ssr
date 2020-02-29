@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "es-module-shims": "./es-module-shims.js"
+  }
+}
