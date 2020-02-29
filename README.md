@@ -1,10 +1,8 @@
 # es-react-ssr
 
-A minimal buildless React server side rendering that leverages Node's ES module support.
+A bleeding edge minimal and buildless React server side rendering example.
 
 Please note you must be on Node 13 or have the experimental modules flag enabled.
-
-To generate react-dom server es module code I used the build step in es-react. [PR here](https://github.com/lukejacksonn/es-react/pull/12)
 
 ```js
 npm install
@@ -14,10 +12,15 @@ npm install
 node index.js
 ```
 
-## caveats
+Features/philosophies
 
-JSX requires Babel, so `React.createElement()` is used instead
+* No transpilation
+* Selective hydration
+* Support rendering at startup and runtime on server
+* Module preload react as entry point
+* Make React the only JS entry point
+* Import maps and snowpack for managing dependencies
 
-## sources
+Workarounds/tradeoffs
 
-[es-react](https://github.com/lukejacksonn/es-react)
+* Using es-react from unpkg as entry point
