@@ -1,15 +1,25 @@
-import {
-    React,
-    ReactDOM,
-  } from "https://unpkg.com/es-react";
+import header from './header.js';
+import home from './home.js';
+import about from './about.js';
 
-const client = React.createElement('h1', {}, 'client');
-const header = React.createElement('h1', {}, 'header');
+const Router = {
+  '/': home,
+  '/about': about,
+  '*': home
+}
 
-ReactDOM.hydrate(client, document.getElementById('app'), () => {
+async function load() {
+  return Router[window.location.pathname];
+}
+
+async function init() {
+  ReactDOM.hydrate(await load().then(render => render()), document.getElementById('app'), () => {
     console.log('body heydrated');
-});
+  });
 
-ReactDOM.hydrate(header, document.getElementById('header'), () => {
-  console.log('header hydrated');
-});
+  ReactDOM.hydrate(await header(), document.getElementById('header'), () => {
+    console.log('header hydrated');
+  });
+}
+
+init();

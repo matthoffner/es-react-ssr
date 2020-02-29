@@ -1,0 +1,1 @@
+export default () => React.createElement('h1', {}, 'header');
