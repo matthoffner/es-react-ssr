@@ -1,6 +1,9 @@
 import header from './header.js';
 import home from './home.js';
 import about from './about.js';
+import htm from 'htm';
+
+window.html = htm.bind(React.createElement);
 
 const Router = {
   '/': home,

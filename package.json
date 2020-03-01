@@ -15,12 +15,14 @@
   "dependencies": {
     "es-module-shims": "0.4.6",
     "express": "^4.17.1",
+    "htm": "^3.0.3",
     "react": "^16.13.0",
     "react-dom": "^16.13.0"
   },
   "snowpack": {
     "webDependencies": [
-      "es-module-shims"
+      "es-module-shims",
+      "htm"
     ]
   }
 }

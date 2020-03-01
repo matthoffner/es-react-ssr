@@ -6,8 +6,10 @@ import home from './src/home.js';
 import about from './src/about.js';
 import header from './src/header.js';
 import error from './src/error.js';
+import htm from 'htm';
 
 global.React = React;
+global.html = htm.bind(React.createElement);
 
 const Router = {
   '/': home,

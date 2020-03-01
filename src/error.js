@@ -1,1 +1,1 @@
-export default ({ statusCode }) => React.createElement('h1', {}, `error page: ${statusCode}`);
+export default ({ statusCode }) => html`<h1>error page: ${statusCode}</h1>`;

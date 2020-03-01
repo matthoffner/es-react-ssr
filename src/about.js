@@ -1,1 +1,1 @@
-export default () => React.createElement('h1', {}, 'about');
+export default () => html`<h1>about</h1>`;

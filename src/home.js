@@ -1,1 +1,1 @@
-export default ({ isClient }) => React.createElement('h1', {}, `${isClient ? 'home loaded' : 'home ssr'}`);
+export default ({ isClient }) => html`<h1>${isClient ? 'home loaded' : 'home ssr'}</h1>`;
