@@ -13,11 +13,11 @@ async function load() {
 }
 
 async function init() {
-  ReactDOM.hydrate(await load().then(render => render()), document.getElementById('app'), () => {
-    console.log('body heydrated');
+  ReactDOM.hydrate(await load().then(render => render({ isClient: true })), document.getElementById('app'), () => {
+    console.log('body hydrated');
   });
 
-  ReactDOM.hydrate(await header(), document.getElementById('header'), () => {
+  ReactDOM.hydrate(await header({ isClient: true }), document.getElementById('header'), () => {
     console.log('header hydrated');
   });
 }

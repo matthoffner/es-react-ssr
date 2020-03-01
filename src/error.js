@@ -1,0 +1,1 @@
+export default ({ statusCode }) => React.createElement('h1', {}, `error page: ${statusCode}`);

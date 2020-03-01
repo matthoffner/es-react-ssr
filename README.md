@@ -12,7 +12,7 @@ npm install
 node index.js
 ```
 
-Features/philosophies
+## Features/philosophies
 
 * No transpilation
 * Selective hydration
@@ -21,6 +21,18 @@ Features/philosophies
 * Make React the only JS entry point
 * Import maps and snowpack for managing dependencies
 
-Workarounds/tradeoffs
+## Server loading sequence
 
-* Using es-react from unpkg as entry point
+1. Render above the fold component to string at startup (`staticRenderComponent`)
+2. Check if page exists immediately
+3. Load import map and html boilerplate
+4. `modulepreload` scripts
+5. Server render above the fold component (`dynamicRenderComponent`)
+6. Await on slowest network call
+7. Server render rest of page
+8. Load scripts
+
+## Bells and whistles
+
+1. Material UI SSR
+2. Apollo

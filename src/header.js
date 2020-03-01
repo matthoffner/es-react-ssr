@@ -1,1 +1,1 @@
-export default () => React.createElement('h1', {}, 'header');
+export default ({ isClient }) => React.createElement('h1', {}, `header load${isClient ? 'ed' : 'ing'}`);
