@@ -61,7 +61,7 @@ const theme = MaterialUI.default.createMuiTheme({
       main: '#fff',
     },
     background: {
-      default: '#fff',
+      default: '#000',
     },
   },
 });
@@ -73,9 +73,11 @@ const Router = {
   '': home
 }
 
-const sheets = new MaterialUI.default.ServerStyleSheets();
-const staticRenderComponent = ReactDOM.renderToString(sheets.collect(header({ isClient: false })));
-const footerComponent = ReactDOM.renderToString(sheets.collect(footer()));
+const headerStyles = new MaterialUI.default.ServerStyleSheets();
+const bodyStyles = new MaterialUI.default.ServerStyleSheets();
+const footerStyles = new MaterialUI.default.ServerStyleSheets();
+const staticRenderComponent = ReactDOM.renderToString(headerStyles.collect(header({ isClient: false })));
+const footerComponent = ReactDOM.renderToString(footerStyles.collect(footer()));
 const entryPoint = '/src/index.js';
 const importMap = `<script defer src='web_modules/es-module-shims.js'></script><script type='importmap-shim' src='web_modules/import-map.json'></script>`;
 const srcBundle = `<script defer type='module-shim' src='${entryPoint}'></script>`;
@@ -100,17 +102,17 @@ app.use('*', async (req, res) => {
       }
       res.type('html');
       res.set('Link', `<${reactUrl}>; rel=modulepreload; as=script, <${reactDomUrl}>; rel=modulepreload; as=script, <${entryPoint}>; rel=modulepreload; as=script`);
-      res.write(`<html><head><link rel="icon" href="data:,">${importMap}</head><div id='header'>${staticRenderComponent}</div>`);
+      res.write(`<html><head><link rel="icon" href="data:,">${importMap}</head><div id='header'><style>${headerStyles}</style>${staticRenderComponent}</div>`);
       res.flushHeaders();
       await new Promise(r => setTimeout(r, 250)); // simulate slow call 
-      const bodyComponent = sheets.collect(html`<${MaterialUI.default.ThemeProvider} theme=${theme}>${dynamicRenderComponent({ isClient: false })}</>`);
-      const rendered = ReactDOM.renderToNodeStream(bodyComponent).pipe(sheetsRegistryStream(sheets));
+      const bodyComponent = bodyStyles.collect(html`<${MaterialUI.default.ThemeProvider} theme=${theme}>${dynamicRenderComponent({ isClient: false })}</>`);
+      const rendered = ReactDOM.renderToNodeStream(bodyComponent).pipe(sheetsRegistryStream(bodyStyles));
       rendered.pipe(res, { end: false });
       rendered.on('error', (err) => {
         console.log(err);
       });
       rendered.on('end', () => {
-        res.write(footerComponent);
+        res.write(`<style>${footerStyles}</style>${footerComponent}`);
         res.write(`<script crossorigin src="${reactUrl}"></script><script crossorigin src="${reactDomUrl}"></script>${srcBundle}</div>`)
         res.write('</body></html>');
         res.end();
