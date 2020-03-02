@@ -16,13 +16,15 @@ async function load() {
 }
 
 async function init() {
-  ReactDOM.hydrate(await load().then(render => render({ isClient: true })), document.getElementById('app'), () => {
+  ReactDOM.hydrate(await load().then(render => render({ isClient: true })), document.getElementById('home'), () => {
     console.log('body hydrated');
   });
 
-  ReactDOM.hydrate(await header({ isClient: true }), document.getElementById('header'), () => {
-    console.log('header hydrated');
-  });
+  const isLoggedIn = false;
+  isLoggedIn &&
+    ReactDOM.hydrate(await header({ isClient: true }), document.getElementById('header'), () => {
+      console.log('header hydrated');
+    });
 }
 
 init();

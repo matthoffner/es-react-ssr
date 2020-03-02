@@ -1,1 +1,1 @@
-export default ({ isClient }) => html`<h1>header load${isClient ? 'ed' : 'ing'}</h1>`;
+export default ({ isClient }) => html`<h1>header logged ${isClient ? 'in' : 'out'}</h1>`;

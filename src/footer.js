@@ -1,0 +1,1 @@
+export default () => html`<><${MaterialUI.Button} variant="contained" color="primary" children="footer"></>`;

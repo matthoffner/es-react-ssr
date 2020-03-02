@@ -1,3 +1,4 @@
+import stream from 'stream';
 import path from 'path';
 import express from 'express';
 import React from './react.cjs';
@@ -6,10 +7,65 @@ import home from './src/home.js';
 import about from './src/about.js';
 import header from './src/header.js';
 import error from './src/error.js';
+import footer from './src/footer.js';
 import htm from 'htm';
+import * as MaterialUI from '@material-ui/core';
+
+const sheetsRegistryStream =
+  sheetsRegistry => {
+    const cached = {};
+
+    function getFreshStyles() {
+        const freshStyles = [];
+        const registry = sheetsRegistry ? sheetsRegistry.sheetsRegistry.registry : [];
+        registry.forEach(member => {
+            const key = member.toString();
+            if (!cached[key]) {
+                cached[key] = true;
+                freshStyles.push(key);
+
+                return;
+            }
+        });
+
+        return freshStyles;
+    }
+
+    return new stream.Transform({
+        transform: function appendStyleChunks(chunk, encoding, callback) {
+            const subsheet = getFreshStyles().join('');
+            if (!!subsheet) {
+                this.push(Buffer.from(`<style type="text/css">${subsheet}</style>${chunk.toString()}`));
+            } else {
+                this.push(Buffer.from(chunk.toString()));
+            }
+            callback();
+        }
+    });
+}
+
 
 global.React = React;
 global.html = htm.bind(React.createElement);
+global.MaterialUI = MaterialUI.default;
+
+const theme = MaterialUI.default.createMuiTheme({
+  palette: {
+    primary: {
+      main: '#556cd6',
+    },
+    secondary: {
+      main: '#19857b',
+    },
+    error: {
+      main: '#fff',
+    },
+    background: {
+      default: '#fff',
+    },
+  },
+});
+
 
 const Router = {
   '/': home,
@@ -17,7 +73,9 @@ const Router = {
   '': home
 }
 
-const staticRenderComponent = ReactDOM.renderToString(header({ isClient: false }));
+const sheets = new MaterialUI.default.ServerStyleSheets();
+const staticRenderComponent = ReactDOM.renderToString(sheets.collect(header({ isClient: false })));
+const footerComponent = ReactDOM.renderToString(sheets.collect(footer()));
 const entryPoint = '/src/index.js';
 const importMap = `<script defer src='web_modules/es-module-shims.js'></script><script type='importmap-shim' src='web_modules/import-map.json'></script>`;
 const srcBundle = `<script defer type='module-shim' src='${entryPoint}'></script>`;
@@ -42,17 +100,23 @@ app.use('*', async (req, res) => {
       }
       res.type('html');
       res.set('Link', `<${reactUrl}>; rel=modulepreload; as=script, <${reactDomUrl}>; rel=modulepreload; as=script, <${entryPoint}>; rel=modulepreload; as=script`);
-      res.write(`<html><head><link rel="icon" href="data:,">${importMap}</head><div id='header'>${staticRenderComponent}</div><div id='app'>`);
+      res.write(`<html><head><link rel="icon" href="data:,">${importMap}</head><div id='header'>${staticRenderComponent}</div>`);
       res.flushHeaders();
       await new Promise(r => setTimeout(r, 250)); // simulate slow call 
-      const rendered = ReactDOM.renderToNodeStream(dynamicRenderComponent({ isClient: false }));
+      const bodyComponent = sheets.collect(html`<${MaterialUI.default.ThemeProvider} theme=${theme}>${dynamicRenderComponent({ isClient: false })}</>`);
+      const rendered = ReactDOM.renderToNodeStream(bodyComponent).pipe(sheetsRegistryStream(sheets));
       rendered.pipe(res, { end: false });
+      rendered.on('error', (err) => {
+        console.log(err);
+      });
       rendered.on('end', () => {
+        res.write(footerComponent);
         res.write(`<script crossorigin src="${reactUrl}"></script><script crossorigin src="${reactDomUrl}"></script>${srcBundle}</div>`)
         res.write('</body></html>');
         res.end();
-      })
-    } catch {
+      });
+    } catch (err) {
+      console.log(err);
       const errorComponent = ReactDOM.renderToNodeStream(error({ statusCode: 500 }));
       errorComponent.pipe(res);
       return;
