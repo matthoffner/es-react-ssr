@@ -25,7 +25,9 @@
     "webDependencies": [
       "es-module-shims",
       "htm",
-      "@material-ui/core"
+      "@material-ui/core",
+      "react",
+      "react-dom"
     ]
   }
 }

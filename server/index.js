@@ -48,8 +48,6 @@ const footerComponent = ReactDOM.renderToString(footerStyles.collect(footer()));
 const entryPoint = '/src/index.js';
 const importMap = `<script defer src='web_modules/es-module-shims.js'></script><script type='importmap-shim' src='web_modules/import-map.json'></script>`;
 const srcBundle = `<script defer type='module-shim' src='${entryPoint}'></script>`;
-const reactUrl = 'https://unpkg.com/react@16/umd/react.production.min.js';
-const reactDomUrl = 'https://unpkg.com/react-dom@16/umd/react-dom.production.min.js';
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -68,7 +66,7 @@ app.use('*', async (req, res) => {
         return;
       }
       res.type('html');
-      res.set('Link', `<${reactUrl}>; rel=modulepreload; as=script, <${reactDomUrl}>; rel=modulepreload; as=script, <${entryPoint}>; rel=modulepreload; as=script`);
+      res.set('Link', `<${entryPoint}>; rel=modulepreload; as=script`);
       res.write(`<html><head><link rel="icon" href="data:,">${importMap}</head><div id='header'><style>${headerStyles}</style>${staticRenderComponent}</div>`);
       res.flushHeaders();
       await new Promise(r => setTimeout(r, 250)); // simulate slow call 
@@ -80,7 +78,7 @@ app.use('*', async (req, res) => {
       });
       rendered.on('end', () => {
         res.write(`<style>${footerStyles}</style>${footerComponent}`);
-        res.write(`<script crossorigin src="${reactUrl}"></script><script crossorigin src="${reactDomUrl}"></script>${srcBundle}</div>`)
+        res.write(`${srcBundle}</div>`)
         res.write('</body></html>');
         res.end();
       });

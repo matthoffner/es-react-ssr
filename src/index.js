@@ -2,8 +2,11 @@ import header from './header.js';
 import home from './home.js';
 import about from './about.js';
 import htm from 'htm';
-
+import * as MaterialUI from '@material-ui/core';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 window.html = htm.bind(React.createElement);
+window.MaterialUI = MaterialUI;
 
 const Router = {
   '/': home,
