@@ -9,14 +9,15 @@ import header from '../src/header.js';
 import error from '../src/error.js';
 import footer from '../src/footer.js';
 import htm from 'htm';
-import * as MaterialUI from '@material-ui/core';
+import { default as MaterialUI } from '@material-ui/core';
 import sheetsRegistryTransfomer from './sheets-registry-transformer.cjs'
 
+// set global variables to allow sharing components between server and client
 global.React = React;
 global.html = htm.bind(React.createElement);
-global.MaterialUI = MaterialUI.default;
+global.MaterialUI = MaterialUI;
 
-const theme = MaterialUI.default.createMuiTheme({
+const theme = MaterialUI.createMuiTheme({
   palette: {
     primary: {
       main: '#556cd6',
@@ -40,9 +41,9 @@ const Router = {
   '': home
 }
 
-const headerStyles = new MaterialUI.default.ServerStyleSheets();
-const bodyStyles = new MaterialUI.default.ServerStyleSheets();
-const footerStyles = new MaterialUI.default.ServerStyleSheets();
+const headerStyles = new MaterialUI.ServerStyleSheets();
+const bodyStyles = new MaterialUI.ServerStyleSheets();
+const footerStyles = new MaterialUI.ServerStyleSheets();
 const staticRenderComponent = ReactDOM.renderToString(headerStyles.collect(header({ isClient: false })));
 const footerComponent = ReactDOM.renderToString(footerStyles.collect(footer()));
 const entryPoint = '/src/index.js';
@@ -70,7 +71,7 @@ app.use('*', async (req, res) => {
       res.write(`<html><head><link rel="icon" href="data:,">${importMap}</head><div id='header'><style>${headerStyles}</style>${staticRenderComponent}</div>`);
       res.flushHeaders();
       await new Promise(r => setTimeout(r, 250)); // simulate slow call 
-      const bodyComponent = bodyStyles.collect(html`<${MaterialUI.default.ThemeProvider} theme=${theme}>${dynamicRenderComponent({ isClient: false })}</>`);
+      const bodyComponent = bodyStyles.collect(html`<${MaterialUI.ThemeProvider} theme=${theme}>${dynamicRenderComponent({ isClient: false })}</>`);
       const rendered = ReactDOM.renderToNodeStream(bodyComponent).pipe(sheetsRegistryTransfomer(bodyStyles));
       rendered.pipe(res, { end: false });
       rendered.on('error', (err) => {
