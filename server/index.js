@@ -3,47 +3,14 @@ import path from 'path';
 import express from 'express';
 import React from './react.cjs';
 import ReactDOM from './react-dom-server.cjs';
-import home from './src/home.js';
-import about from './src/about.js';
-import header from './src/header.js';
-import error from './src/error.js';
-import footer from './src/footer.js';
+import home from '../src/home.js';
+import about from '../src/about.js';
+import header from '../src/header.js';
+import error from '../src/error.js';
+import footer from '../src/footer.js';
 import htm from 'htm';
 import * as MaterialUI from '@material-ui/core';
-
-const sheetsRegistryStream =
-  sheetsRegistry => {
-    const cached = {};
-
-    function getFreshStyles() {
-        const freshStyles = [];
-        const registry = sheetsRegistry ? sheetsRegistry.sheetsRegistry.registry : [];
-        registry.forEach(member => {
-            const key = member.toString();
-            if (!cached[key]) {
-                cached[key] = true;
-                freshStyles.push(key);
-
-                return;
-            }
-        });
-
-        return freshStyles;
-    }
-
-    return new stream.Transform({
-        transform: function appendStyleChunks(chunk, encoding, callback) {
-            const subsheet = getFreshStyles().join('');
-            if (!!subsheet) {
-                this.push(Buffer.from(`<style type="text/css">${subsheet}</style>${chunk.toString()}`));
-            } else {
-                this.push(Buffer.from(chunk.toString()));
-            }
-            callback();
-        }
-    });
-}
-
+import sheetsRegistryTransfomer from './sheets-registry-transformer.cjs'
 
 global.React = React;
 global.html = htm.bind(React.createElement);
@@ -106,7 +73,7 @@ app.use('*', async (req, res) => {
       res.flushHeaders();
       await new Promise(r => setTimeout(r, 250)); // simulate slow call 
       const bodyComponent = bodyStyles.collect(html`<${MaterialUI.default.ThemeProvider} theme=${theme}>${dynamicRenderComponent({ isClient: false })}</>`);
-      const rendered = ReactDOM.renderToNodeStream(bodyComponent).pipe(sheetsRegistryStream(bodyStyles));
+      const rendered = ReactDOM.renderToNodeStream(bodyComponent).pipe(sheetsRegistryTransfomer(bodyStyles));
       rendered.pipe(res, { end: false });
       rendered.on('error', (err) => {
         console.log(err);

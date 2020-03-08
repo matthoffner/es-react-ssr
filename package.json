@@ -18,7 +18,8 @@
     "express": "^4.17.1",
     "htm": "^3.0.3",
     "react": "^16.13.0",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.0",
+    "sheets-registry-transformer": "^1.0.0"
   },
   "snowpack": {
     "webDependencies": [

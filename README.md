@@ -1,19 +1,19 @@
 # es-react-ssr
 
-A modern React server side rendering example.
+A modern React server side rendering example. This is an experiment in trying to do a lot of things:
 
-This example is built to handle dynamic server side rendering, meaning content is dynamically fetched based on the url.
-
-There are many intricicies that determine the use case of this type os setup. Eventually caching with a CDN will be added.
-
-Please note you must be on Node 13 or have the experimental modules flag enabled.
+* Use React as an ES module to avoid having to build with babel or webpack
+* Use React on the server without requiring babel and Node 13 modules
+* Show a real world partial hydration example
+* Show a real world dynamic server rendering example
+* Demonstrate buildless client config with snowpack and material ui
 
 ```js
 npm install
 ```
 
 ```js
-node index.js
+node server
 ```
 
 ## Server loading sequence
@@ -26,8 +26,3 @@ node index.js
 6. Await on slowest network call
 7. Server render rest of page
 8. Load scripts
-
-## Bells and whistles
-
-1. Material UI SSR
-2. Apollo

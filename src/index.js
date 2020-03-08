@@ -20,7 +20,7 @@ async function init() {
     console.log('body hydrated');
   });
 
-  const isLoggedIn = false;
+  const isLoggedIn = true;
   isLoggedIn &&
     ReactDOM.hydrate(await header({ isClient: true }), document.getElementById('header'), () => {
       console.log('header hydrated');
