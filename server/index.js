@@ -11,29 +11,16 @@ import footer from '../src/footer.js';
 import htm from 'htm';
 import { default as MaterialUI } from '@material-ui/core';
 import sheetsRegistryTransfomer from './sheets-registry-transformer.cjs'
+import { theme } from '../src/theme.js';
+import ApolloClient from './apollo-client.cjs';
+import { default as InMemoryCache } from 'apollo-cache-inmemory';
+import { default as ReactApollo } from 'react-apollo';
 
-// set global variables to allow sharing components between server and client
 global.React = React;
 global.html = htm.bind(React.createElement);
 global.MaterialUI = MaterialUI;
 
-const theme = MaterialUI.createMuiTheme({
-  palette: {
-    primary: {
-      main: '#556cd6',
-    },
-    secondary: {
-      main: '#19857b',
-    },
-    error: {
-      main: '#fff',
-    },
-    background: {
-      default: '#000',
-    },
-  },
-});
-
+const materialUITheme = MaterialUI.createMuiTheme(theme);
 
 const Router = {
   '/': home,
@@ -44,7 +31,7 @@ const Router = {
 const headerStyles = new MaterialUI.ServerStyleSheets();
 const bodyStyles = new MaterialUI.ServerStyleSheets();
 const footerStyles = new MaterialUI.ServerStyleSheets();
-const staticRenderComponent = ReactDOM.renderToString(headerStyles.collect(header({ isClient: false })));
+const headerComponent = ReactDOM.renderToString(headerStyles.collect(header({ loggedIn: false })));
 const footerComponent = ReactDOM.renderToString(footerStyles.collect(footer()));
 const entryPoint = '/src/index.js';
 const importMap = `<script defer src='web_modules/es-module-shims.js'></script><script type='importmap-shim' src='web_modules/import-map.json'></script>`;
@@ -68,10 +55,22 @@ app.use('*', async (req, res) => {
       }
       res.type('html');
       res.set('Link', `<${entryPoint}>; rel=modulepreload; as=script`);
-      res.write(`<html><head><link rel="icon" href="data:,">${importMap}</head><div id='header'><style>${headerStyles}</style>${staticRenderComponent}</div>`);
+      res.write(`<html><head><link rel="icon" href="data:,">${importMap}</head><div id='header'><style>${headerStyles}</style>${headerComponent}</div>`);
       res.flushHeaders();
-      await new Promise(r => setTimeout(r, 250)); // simulate slow call 
-      const bodyComponent = bodyStyles.collect(html`<${MaterialUI.ThemeProvider} theme=${theme}>${dynamicRenderComponent({ isClient: false })}</>`);
+      const client = new ApolloClient.ApolloClient({
+        ssrMode: true,
+        link: () => {},
+        cache: new InMemoryCache.InMemoryCache()
+      });
+      const Root = dynamicRenderComponent({ isClient: false });
+      try {
+        await new Promise(r => setTimeout(r, 250)); // simulate slow call 
+        await ReactApollo.getDataFromTree(Root);
+      } catch (err) {
+        console.error(err); /* eslint-disable-line no-console */
+      }
+      // const data = client.extract();
+      const bodyComponent = bodyStyles.collect(html`<${ReactApollo.ApolloProvider} client=${client}><${MaterialUI.ThemeProvider} theme=${materialUITheme}>${Root}</></>`);
       const rendered = ReactDOM.renderToNodeStream(bodyComponent).pipe(sheetsRegistryTransfomer(bodyStyles));
       rendered.pipe(res, { end: false });
       rendered.on('error', (err) => {
