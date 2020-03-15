@@ -1,6 +1,6 @@
-import stream from 'stream';
 import path from 'path';
 import express from 'express';
+import compression from 'compression';
 import React from 'react';
 import ReactDOM from './react-dom-server.cjs';
 import home from '../src/home.js';
@@ -39,7 +39,7 @@ const srcBundle = `<script defer type='module-shim' src='${entryPoint}'></script
 
 const { PORT = 3000 } = process.env;
 const app = express();
-
+app.use(compression());
 app.use('/web_modules', express.static(path.resolve(process.cwd(), 'web_modules')));
 
 app.use('/src', express.static(path.resolve(process.cwd(), 'src')));
@@ -56,7 +56,7 @@ app.use('*', async (req, res) => {
       res.type('html');
       res.set('Link', `<${entryPoint}>; rel=modulepreload; as=script`);
       res.write(`<html><head><link rel="icon" href="data:,">${importMap}</head><div id='header'><style>${headerStyles}</style>${headerComponent}</div>`);
-      res.flushHeaders();
+      res.flush();
       const client = new ApolloClient.ApolloClient({
         ssrMode: true,
         link: () => {},

@@ -3,10 +3,10 @@ import home from './home.js';
 import about from './about.js';
 import htm from 'htm';
 import * as MaterialUI from '@material-ui/core';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { createElement } from 'react';
+import { hydrate } from 'react-dom';
 
-window.html = htm.bind(React.createElement);
+window.html = htm.bind(createElement);
 window.MaterialUI = MaterialUI;
 
 const Router = {
@@ -20,11 +20,11 @@ async function load() {
 }
 
 async function init() {
-  ReactDOM.hydrate(await load().then(render => render({ isClient: true })), document.getElementById('home'), () => {
+  hydrate(await load().then(render => render({ isClient: true })), document.getElementById('home'), () => {
     console.log('body hydrated');
   });
   
-  ReactDOM.hydrate(await header({ loggedIn: true }), document.getElementById('header'), () => {
+  hydrate(await header({ loggedIn: true }), document.getElementById('header'), () => {
     console.log('header hydrated');
   });
 }

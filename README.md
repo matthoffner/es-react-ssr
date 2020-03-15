@@ -30,7 +30,7 @@ With Node 13 experimental modules and all modern browsers supporting ES modules,
 
 ### Progressive rendering (Time to First Byte)
 
-`res.flushHeaders()` is sent after preloading scripts and rendering a static component. Once the headers are flushed, the first byte is sent, and slower blocking requests can be kicked off without impacting TTFB.
+`res.flush()` is sent after preloading the entry script and rendering a static component. Once the headers are flushed, the first byte is sent, and slower blocking requests can be kicked off without impacting TTFB.
 
 ```js
 res.type('html');
