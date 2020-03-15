@@ -15,10 +15,12 @@ import { theme } from '../src/theme.js';
 import ApolloClient from './apollo-client.cjs';
 import { default as InMemoryCache } from 'apollo-cache-inmemory';
 import { default as ReactApollo } from 'react-apollo';
+import { default as MaterialUILab } from '@material-ui/lab';
 
 global.React = React;
 global.html = htm.bind(React.createElement);
 global.MaterialUI = MaterialUI;
+global.Skeleton = MaterialUILab.Skeleton;
 
 const materialUITheme = MaterialUI.createMuiTheme(theme);
 
