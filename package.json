@@ -5,8 +5,6 @@
   "description": "Example React SSR example with ES modules, no transpilation required",
   "main": "index.js",
   "scripts": {
-    "postinstall": "netlify-lambda install",
-    "serve": "netlify-lambda serve",
     "prepare": "snowpack",
     "start": "node --experimental-modules server"
   },
@@ -20,13 +18,9 @@
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
     "apollo-utilities": "^1.3.3",
-    "compression": "^1.7.4",
     "es-module-shims": "0.4.6",
-    "express": "^4.17.1",
     "graphql": "^14.6.0",
     "htm": "^3.0.3",
-    "n": "^6.4.0",
-    "netlify-lambda": "^1.6.3",
     "react": "^16.13.0",
     "react-apollo": "^3.1.3",
     "react-dom": "^16.13.0",
