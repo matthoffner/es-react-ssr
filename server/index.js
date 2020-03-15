@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import stream from 'stream';
 import http2 from 'http2';
 import React from 'react';
@@ -42,9 +43,17 @@ const entryPoint = '/src/index.js';
 const importMap = `<script defer src='web_modules/es-module-shims.js'></script><script type='importmap-shim' src='web_modules/import-map.json'></script>`;
 const srcBundle = `<script defer type='module-shim' src='${entryPoint}'></script>`;
 
+const setContentType = (extension) => {
+  const supported = {
+    '.js': 'application/javascript'
+  }
+  return supported[extension] || 'text/plain'
+}
+
 const handler = async (req, res) => {
   if (req.url.match(/(web_modules|src)/)) {
-    var output = fs.createReadStream(`${process.cwd()}${req.url}`);
+    const fileExtension = path.extname(req.url);
+    const output = fs.createReadStream(`${process.cwd()}${req.url}`);
     res.setHeader('Vary', 'Accept-Encoding');
     let acceptEncoding = req.headers['accept-encoding'];
     if (!acceptEncoding) {
@@ -56,20 +65,17 @@ const handler = async (req, res) => {
         console.error('An error occurred:', err);
       }
     };
+    res.setHeader('Content-Type',  setContentType(fileExtension));
     if (/\bbr\b/.test(acceptEncoding)) {
-      res.setHeader('Content-Type',  'application/javascript');
       res.writeHead(200, { 'Content-Encoding': 'br' });
       stream.pipeline(output, zlib.createBrotliCompress(), res, onError);
     } else if (/\bgzip\b/.test(acceptEncoding)) {
-      res.setHeader('Content-Type', 'application/javascript');
       res.writeHead(200, { 'Content-Encoding': 'gzip' });
       stream.pipeline(output, zlib.createGzip(), res, onError);
     } else if (/\bdeflate\b/.test(acceptEncoding)) {
-      res.setHeader('Content-Type', 'application/javascript');
       res.writeHead(200, { 'Content-Encoding': 'deflate' });
       stream.pipeline(output, zlib.createDeflate(), res, onError);
     } else {
-      res.setHeader('Content-Type',  'application/javascript');
       res.writeHead(200, {});
       stream.pipeline(output, res, onError);
     }
