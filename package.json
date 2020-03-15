@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "netlify-lambda install",
-    "serve": "netlify-lambda serve server",
+    "serve": "netlify-lambda serve",
     "prepare": "snowpack",
     "start": "node --experimental-modules server"
   },
