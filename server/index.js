@@ -82,6 +82,12 @@ const handler = async (req, res) => {
     return;
   }
 
+  const modulePreload = () => {
+    return [entryPoint, '/web_modules/react.js'].map(file => {
+      return `<${file}>; rel=modulepreload; as=script`
+    }).join(', ');
+  }
+
   try {
     const dynamicRenderComponent = Router[req.url];
     if (!dynamicRenderComponent) {
@@ -90,7 +96,7 @@ const handler = async (req, res) => {
       errorComponent.pipe(res);
       return;
     }
-    res.setHeader('Link', `<${entryPoint}>; rel=modulepreload; as=script`);
+    res.setHeader('Link', modulePreload());
     res.write(`<html><head><link rel="icon" href="data:,">${importMap}</head><div id='header'><style>${headerStyles}</style>${headerComponent}</div>`);
     res.flushHeaders();
 
