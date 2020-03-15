@@ -5,6 +5,8 @@
   "description": "Example React SSR example with ES modules, no transpilation required",
   "main": "index.js",
   "scripts": {
+    "postinstall": "netlify-lambda install",
+    "serve": "netlify-lambda serve server",
     "prepare": "snowpack",
     "start": "node --experimental-modules server"
   },
