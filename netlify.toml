@@ -1,0 +1,3 @@
+[build]
+  functions = "server" #  netlify-lambda reads this
+  publish = "src"

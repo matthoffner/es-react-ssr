@@ -1,4 +1,5 @@
 import path from 'path';
+import serverless from 'serverless-http';
 import express from 'express';
 import compression from 'compression';
 import React from 'react';
@@ -95,3 +96,7 @@ app.use('*', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
+
+export async function handler(event, context) {
+  return serverless(app);
+}
