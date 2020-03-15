@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "prepare": "snowpack",
-    "start": "node --experimental-modules index.js"
+    "start": "node --experimental-modules server"
   },
   "license": "GPL-3.0",
   "devDependencies": {
@@ -23,6 +23,7 @@
     "express": "^4.17.1",
     "graphql": "^14.6.0",
     "htm": "^3.0.3",
+    "n": "^6.4.0",
     "react": "^16.13.0",
     "react-apollo": "^3.1.3",
     "react-dom": "^16.13.0",

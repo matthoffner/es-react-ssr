@@ -10,8 +10,16 @@ Bleeding edge React template with a few key goals:
 npm install
 ```
 
+On Node 13:
+
 ```js
 node server
+```
+
+Node 8-12:
+
+```js
+node --experimental-modules server
 ```
 
 ## Buildless, zero config
