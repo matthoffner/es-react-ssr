@@ -41,6 +41,7 @@ const footerComponent = ReactDOM.renderToString(footerStyles.collect(footer()));
 
 const entryPoint = '/src/index.js';
 const importMap = `<script defer src='web_modules/es-module-shims.js'></script><script type='importmap-shim' src='web_modules/import-map.json'></script>`;
+const pictureFill = `<script>document.createElement("picture");</script><script src="https://cdnjs.cloudflare.com/ajax/libs/picturefill/3.0.3/picturefill.min.js" async></script>`;
 const srcBundle = `<script defer type='module-shim' src='${entryPoint}'></script>`;
 
 const setContentType = (extension) => {
@@ -50,9 +51,15 @@ const setContentType = (extension) => {
   return supported[extension] || 'text/plain'
 }
 
-const handler = async (req, res) => {
-  if (req.url.match(/(web_modules|src)/)) {
-    const fileExtension = path.extname(req.url);
+const server = async (req, res) => {
+  const fileExtension = path.extname(req.url);
+  if (req.url.match(/(images)/)) {
+    const output = fs.createReadStream(`${process.cwd()}${req.url}`);
+    res.setHeader('Content-Type', setContentType(fileExtension));
+    output.pipe(res);
+    return;
+  }
+  if (req.url.match(/(web_modules|src|images)/)) {
     const output = fs.createReadStream(`${process.cwd()}${req.url}`);
     res.setHeader('Vary', 'Accept-Encoding');
     let acceptEncoding = req.headers['accept-encoding'];
@@ -97,7 +104,7 @@ const handler = async (req, res) => {
       return;
     }
     res.setHeader('Link', modulePreload());
-    res.write(`<html><head><link rel="icon" href="data:,">${importMap}</head><div id='header'><style>${headerStyles}</style>${headerComponent}</div>`);
+    res.write(`<html><head><link rel="icon" href="data:,">${pictureFill}${importMap}</head><div id='header'><style>${headerStyles}</style>${headerComponent}</div>`);
     res.flushHeaders();
 
     const client = new ApolloClient.ApolloClient({
@@ -139,7 +146,7 @@ const serverOptions = {
 };
 
 http2
-  .createSecureServer(serverOptions, handler)
+  .createSecureServer(serverOptions, server)
   .listen(3000, () => {
     console.log("http2 server started on port", 3000);
   });

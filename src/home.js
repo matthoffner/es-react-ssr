@@ -5,19 +5,23 @@ export default ({ isClient }) => {
                 <${MaterialUI.Box} key=${1} width=${210} marginRight=${0.5} my=${5}>
                     ${!isClient ? 
                         html`<${Skeleton} variant=${"rect"} width=${210} height=${118}></>` :
-                        html`<img style=${{ width: 210, height: 118 }} src=${"https://i.ytimg.com/vi/_Uu12zY01ts/hqdefault.jpg?sqp=-oaymwEZCPYBEIoBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLCpX6Jan2rxrCAZxJYDXppTP4MoQA"} />`}
+                        html`<picture>
+                                <source srcset="images/ipad.webp" type="image/webp" />
+                                <source srcset="images/ipad.jpeg" type="image/jpeg" />
+                                <img style=${{ width: 210, height: 118 }} src=${"./images/ipad.jpeg"} />
+                            </>`}
                     <${MaterialUI.Box} pt=${0.5}>
                         ${!isClient ? 
                             html`<${React.Fragment}><${Skeleton}></><${Skeleton} width=${"60%"}></></>` : 
                             html`<${MaterialUI.Box} pr=${2}>
                                     <${MaterialUI.Typography} gutterBottom=${true} variant=${"body2"}>
-                                        Queen - Greatest Hits
+                                        Ipad Pro - 2020
                                     </>
                                     <${MaterialUI.Typography} display="block" variant="caption" color="textSecondary">
-                                        Queen Official
+                                        Apple
                                     </>
                                     <${MaterialUI.Typography} variant=${"caption"} color=${"textSecondary"}>
-                                        40 M views * 3 years ago
+                                        40 M views * 1 day ago
                                     </>
                                 </>`
                         }

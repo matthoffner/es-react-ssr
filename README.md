@@ -47,6 +47,8 @@ res.write(`<html><head><link rel="icon" href="data:,">${importMap}</head><div id
 res.flushHeaders();
 ```
 
+Also this project ditches express for using node's built in http/2 module. This unlocks brotli compression via `zlib`.
+
 ### No Render Blocking Resources (First Contentful Paint)
 
 Progressive rendering will help with first contentful paint, but to optimize CSS we need to ensure there is no blocking CSS. To achieve this `sheets-registry-transformer` is invoked during rendering to extract styles from Material UI react components. This creates the ideal CSS to HTML rendering pattern where stylesheets do not need to be bundled separately.
