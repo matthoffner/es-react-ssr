@@ -1,1 +1,1 @@
-export default ({ statusCode }) => html`<h1>error page: ${statusCode}</h1>`;
+export default ({ statusCode }) => html`<${MaterialUI.Typography} display="block" variant="h2">error page: ${statusCode}</>`;

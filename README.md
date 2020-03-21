@@ -49,6 +49,8 @@ res.flushHeaders();
 
 Also this project ditches express for using node's built in http/2 module. This unlocks brotli compression via `zlib`.
 
+Included is `picturefill` which allows polyfilling to support `webp` images when possible.
+
 ### No Render Blocking Resources (First Contentful Paint)
 
 Progressive rendering will help with first contentful paint, but to optimize CSS we need to ensure there is no blocking CSS. To achieve this `sheets-registry-transformer` is invoked during rendering to extract styles from Material UI react components. This creates the ideal CSS to HTML rendering pattern where stylesheets do not need to be bundled separately.
@@ -83,6 +85,7 @@ If the component is below the fold, we can leverage `IntersectionObserver` to la
 ## Tools used
 
 * snowpack
+* picturefill
 * es-module-shims
 * importmaps
 * htm

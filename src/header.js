@@ -1,4 +1,4 @@
 export default (props) => html`
-    <${MaterialUI.Typography}>welcome
-        <${MaterialUI.Button}>${props.loggedIn ? 'log out' : 'loading'}</>
+    <${MaterialUI.Typography}><a href="/">home</a> | <a href="/about">about</a> | <a href="/projects">projects</a>
+        <${MaterialUI.Button}>${props.loggedIn ? 'welcome' : 'loading'}</>
     </>`;

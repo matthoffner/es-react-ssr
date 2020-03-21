@@ -13,7 +13,7 @@ import header from '../src/header.js';
 import error from '../src/error.js';
 import footer from '../src/footer.js';
 import { theme } from '../src/theme.js';
-
+import projects from '../src/projects.js';
 import ApolloClient from './apollo-client.cjs';
 import { default as MaterialUI } from '@material-ui/core';
 import { default as InMemoryCache } from 'apollo-cache-inmemory';
@@ -24,18 +24,20 @@ global.React = React;
 global.html = htm.bind(React.createElement);
 global.MaterialUI = MaterialUI;
 global.Skeleton = Lab.Skeleton;
+global.Fragment = React.Fragment;
 
 const materialUITheme = MaterialUI.createMuiTheme(theme);
 
 const Router = {
-  '/': home,
+  '/home': home,
   '/about': about,
-  '': home
+  '/projects': projects
 }
 
 const headerStyles = new MaterialUI.ServerStyleSheets();
 const bodyStyles = new MaterialUI.ServerStyleSheets();
 const footerStyles = new MaterialUI.ServerStyleSheets();
+const errorStyles = new MaterialUI.ServerStyleSheets();
 const headerComponent = ReactDOM.renderToString(headerStyles.collect(header({ loggedIn: false })));
 const footerComponent = ReactDOM.renderToString(footerStyles.collect(footer()));
 
@@ -99,7 +101,7 @@ const server = async (req, res) => {
     const dynamicRenderComponent = Router[req.url];
     if (!dynamicRenderComponent) {
       res.writeHead(404);
-      const errorComponent = ReactDOM.renderToNodeStream(error({ statusCode: 404 }));
+      const errorComponent = ReactDOM.renderToNodeStream(errorStyles.collect(error({ statusCode: 404 }))).pipe(sheetsRegistryTransfomer(errorStyles));
       errorComponent.pipe(res);
       return;
     }
@@ -134,7 +136,7 @@ const server = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    const errorComponent = ReactDOM.renderToNodeStream(error({ statusCode: 500 }));
+    const errorComponent = ReactDOM.renderToNodeStream(errorStyles.collect(error({ statusCode: 500 }))).pipe(sheetsRegistryTransfomer(errorStyles));
     errorComponent.pipe(res);
     return;
   } 
