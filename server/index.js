@@ -7,7 +7,7 @@ import ReactDOM from './react-dom-server.cjs';
 import htm from 'htm';
 import sheetsRegistryTransfomer from './sheets-registry-transformer.cjs'
 import zlib from 'zlib';
-import home from '../src/home.js';
+import loading from '../src/loading.js';
 import about from '../src/about.js';
 import header from '../src/header.js';
 import error from '../src/error.js';
@@ -29,7 +29,7 @@ global.Fragment = React.Fragment;
 const materialUITheme = MaterialUI.createMuiTheme(theme);
 
 const Router = {
-  '/home': home,
+  '/home': loading,
   '/about': about,
   '/projects': projects
 }
