@@ -5,6 +5,7 @@ import { Skeleton } from '@material-ui/lab';
 import { createElement, Suspense, lazy, Fragment } from 'react';
 import { hydrate } from 'react-dom';
 import Loading from './loading.js';
+
 window.html = htm.bind(createElement);
 window.Fragment = Fragment;
 window.MaterialUI = MaterialUI;

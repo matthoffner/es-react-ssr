@@ -5,6 +5,7 @@ import http2 from 'http2';
 import React from 'react';
 import ReactDOM from './react-dom-server.cjs';
 import htm from 'htm';
+import marked from 'marked';
 import sheetsRegistryTransfomer from './sheets-registry-transformer.cjs'
 import zlib from 'zlib';
 import loading from '../src/loading.js';
@@ -13,7 +14,6 @@ import header from '../src/header.js';
 import error from '../src/error.js';
 import footer from '../src/footer.js';
 import { theme } from '../src/theme.js';
-import projects from '../src/projects.js';
 import ApolloClient from './apollo-client.cjs';
 import { default as MaterialUI } from '@material-ui/core';
 import { default as InMemoryCache } from 'apollo-cache-inmemory';
@@ -25,6 +25,9 @@ global.html = htm.bind(React.createElement);
 global.MaterialUI = MaterialUI;
 global.Skeleton = Lab.Skeleton;
 global.Fragment = React.Fragment;
+global.marked = marked;
+
+import projects from '../src/projects.js';
 
 const materialUITheme = MaterialUI.createMuiTheme(theme);
 
